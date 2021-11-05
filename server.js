@@ -16,6 +16,7 @@ app.use(express.static('public'))
 //routes
 app.use("/", require("./routes/index"))
 app.use("/api", require("./routes/users"));
+app.use("/api/users", require("./routes/exercises"))
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });

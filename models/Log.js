@@ -1,10 +1,9 @@
 const mongoose = require("mongoose")
-const Exercise = require("./Exercise")
-const User = require("./User")
+// const { ExerciseSchema } = require("./Exercise")
+const {UserSchema} = require("./User.js")
 
-
-const Log = new mongoose.Schema({
-  User: User,
+const LogSchema = new mongoose.Schema({
+  User: UserSchema,
   count: Number,
   log =[{
     description: String,
@@ -13,4 +12,5 @@ const Log = new mongoose.Schema({
   }]
 })
 
-module.exports = mongoose.model("Log", Log);
+module.exports = mongoose.model("Log", LogSchema);
+module.exports.LogSchema = LogSchema;

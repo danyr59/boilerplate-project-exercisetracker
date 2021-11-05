@@ -1,13 +1,15 @@
 const mongoose = require("mongoose")
 
-const User = require("User")
+const { UserSchema } = require("./User")
 
-const Exercise = new mongoose.Schema({
-  User: User,
+
+const ExerciseSchema = new mongoose.Schema({
+  User: UserSchema,
   description: String,
-  duretion: Number,
+  duration: Number,
   date: { type: Date, default: Date.now() }
 
 })
 
-module.exports = mongoose.model("Exercise", Exercise);
+module.exports.Exercise = mongoose.model("Exercise", ExerciseSchema);
+module.exports.ExerciseSchema = ExerciseSchema;
