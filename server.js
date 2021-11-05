@@ -2,12 +2,16 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 require('dotenv').config()
+const connectDB = require('./config/db')
 
+//conect to data base 
+connectDB();
 
 //middlewares
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static('public'))
+
 
 //routes
 app.use("/", require("./routes/index"))
