@@ -4,11 +4,11 @@ const { UserSchema } = require("./User")
 
 
 const ExerciseSchema = new mongoose.Schema({
-  User: UserSchema,
+  username: String,
+  _id: String,
   description: String,
   duration: Number,
-  date: { type: Date, default: Date.now() }
-
+  date: String
 })
 
 module.exports.Exercise = mongoose.model("Exercise", ExerciseSchema);
