@@ -1,16 +1,18 @@
 const mongoose = require("mongoose")
 // const { ExerciseSchema } = require("./Exercise")
-const {UserSchema} = require("./User.js")
+const { ExerciseSchema } = require("./Exercise.js")
 
 const LogSchema = new mongoose.Schema({
-  User: UserSchema,
+  username: String,
   count: Number,
-  log =[{
-    description: String,
-    duration: Number,
-    date: { type: Date, default: Date.now() }
-  }]
+  _id: String,
+  log: [
+    ExerciseSchema
+    // description: String,
+    // duration: Number,
+    // date: { type: Date }
+  ]
 })
 
-module.exports = mongoose.model("Log", LogSchema);
+module.exports.Log = mongoose.model("Log", LogSchema);
 module.exports.LogSchema = LogSchema;

@@ -4,8 +4,6 @@ const { UserSchema } = require("./User")
 
 
 const ExerciseSchema = new mongoose.Schema({
-  username: String,
-  _id: String,
   description: String,
   duration: Number,
   date: String
