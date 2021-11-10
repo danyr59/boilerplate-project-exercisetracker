@@ -1,6 +1,12 @@
 const express = require('express')
-const { User } = require("../models/User")
 const router = express.Router();
+
+const { User } = require("../models/User")
+
+/**
+  * @Route POST /api/users/
+  * @desc Create a users
+  */
 
 router.post("/users", async (req, res) => {
   const { username } = req.body
