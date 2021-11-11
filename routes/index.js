@@ -1,6 +1,6 @@
 const express = require('express')
+const router = express.Router();
 
-<<<<<<< HEAD
 const { User } = require("../models/User.js")
 
 const { Log } = require("../models/Log")
@@ -43,8 +43,4 @@ router.get("/api/users/:_id/logs", async (req, res) => {
     res.json("fail server")
   }
 })
-=======
-const router = express.Router();
-
->>>>>>> parent of f92dbf2... terminando la configuracion de las rutas
 module.exports = router;

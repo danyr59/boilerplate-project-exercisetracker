@@ -4,15 +4,12 @@ const { ExerciseSchema } = require("./Exercise.js")
 
 const LogSchema = new mongoose.Schema({
   username: String,
-  count: Number,
+  count: { type: Number, default: 1 },
   _id: String,
   log: [
     ExerciseSchema
-    // description: String,
-    // duration: Number,
-    // date: { type: Date }
   ]
-})
+}, { versionKey: false })
 
 module.exports.Log = mongoose.model("Log", LogSchema);
 module.exports.LogSchema = LogSchema;
