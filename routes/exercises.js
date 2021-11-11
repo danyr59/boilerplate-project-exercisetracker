@@ -1,47 +1,47 @@
 const express = require('express')
-const router = express.Router();
-
 const { Exercise } = require("../models/Exercise")
 const { User } = require("../models/User")
 const { Log } = require("../models/Log")
+const router = express.Router();
 
-/**
-  * @Route POST /api/users/:_id/exercise
-  * @desc create tracker 
-  */
+// const ejercicio = new Exercise({})
 router.post("/:_id/exercises", async (req, res) => {
   const { _id } = req.params;
   const { description, duration, date } = req.body;
-
+  // console.log(typeof _id, typeof description, typeof duration, typeof date)
+  // console.log(description, duration, date)
+  //buscar
   try {
-    //buscar si existe usuario de lo contrario me salgo
-    const user = await User.findById({ _id })
+    const user = await User.findById(_id)
     if (!user) {
-      return res.json("no existe id")
+      return res.json("no existe usuario")
     }
 
-    //busco si existe un log bajo ese id, de lo contrario se crea
+    let count = 1;
+    const { username } = user;
+    const _date = /\d{4}[-]\d{1,2}[-]\d{1,2}/.test(date) ? new Date(date).toUTCString() : new Date().toUTCString()
+    console.log(_date)
+
+    //crear exercise
+    const exercise = new Exercise({
+      description,
+      duration: new Number(duration),
+      date: _date
+    })
+
+    //crear Log 
     const logs = await Log.findById(_id)
+
     if (!logs) {
-      const { username } = user;
-      const _date = /\d{4}[-]\d{1,2}[-]\d{1,2}/.test(date) ? new Date(date).toDateString() : new Date().toDateString()//toUTCString()
-
-      //creo el Obj exercise para inicializar el Array
-      const exercise = new Exercise({
-        description,
-        duration: new Number(duration),
-        date: _date
-      })
-
       const log = new Log({
         username,
+        count,
         _id,
         log: [exercise]
       })
 
       await log.save();
     } else {
-
       logs.count++;
       logs.log.push(exercise)
       await logs.save();
@@ -50,6 +50,14 @@ router.post("/:_id/exercises", async (req, res) => {
       // console.log(await Log.findOneAndUpdate({ _id }, { $push: { log: logs } }, { new: true }))
     }
 
+
+    //guardar el Log directamente 
+    console.log(exercise)
+
+    //guardo exercise
+    // await exercise.save()
+
+    //response json 
     res.json({
       username,
       description,
@@ -60,7 +68,7 @@ router.post("/:_id/exercises", async (req, res) => {
 
   } catch (error) {
     console.log(error.message)
-    res.json("fail server")
+    res.json("Server fail")
   }
 })
 
