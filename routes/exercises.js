@@ -51,11 +51,11 @@ router.post("/:_id/exercises", async (req, res) => {
     }
 
     res.json({
-      username,
-      description,
-      duration: new Number(duration),
-      _date,
       _id,
+      username,
+      _date,
+      duration: new Number(duration),
+      description
     })
 
   } catch (error) {
