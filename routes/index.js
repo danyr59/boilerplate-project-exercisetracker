@@ -51,27 +51,31 @@ router.get("/api/users/:_id/logs", async (req, res) => {
       // console.log(query.from, query.to)
       const from = new Date(query['from']).getTime();
       const to = new Date(query['to']).getTime();
-      if (!from && !to) {
+      if (!from && !to && !query['limit']) {
         return res.json("From, to - format invalid")
+      } else if (!from && !to && query['limit']) {
+        log.log = JSON.parse(JSON.stringify(log.log)).slice(0, Number(query.limit))
+        return res.json(log)
       }
       // console.log(from, to)
       const logs = JSON.parse(JSON.stringify(log.log)).filter((exercise) => {
         const date = new Date(exercise.date).getTime()
         return (
           (from && to)
-            ? (from < date && date < to)
+            ? (from <= date && date <= to)
               ? true
               : false
             : (!to && from)
-              ? (from < date)
+              ? (from <= date)
                 ? true
                 : false
-              : (date < to)
+              : (date <= to)
                 ? true
                 : false
         )
-      }).slice(0, Number(query.limit))
-      log.log = logs;
+      })//.slice(0, Number(query.limit))
+
+      log.log = (query.limit) ? logs.slice(0, Number(query.limit)) : logs;
       res.json(log)
       console.log("datos del log", logs)
 
