@@ -14,14 +14,14 @@ router.post("/:_id/exercises", async (req, res) => {
   const { description, duration, date } = req.body;
 
   try {
-    //buscar si existe usuario de lo contrario me salgo
+    //buscar si existe de lo contrario me salgo
+    //si no existe , es debido que no existe tanto User como Log
     const user = await User.findById(_id)
-    console.log(user)
     if (!user) {
       return res.json("no existe id")
     }
     const { username } = user;
-    const _date = /\d{4}[-]\d{1,2}[-]\d{1,2}/.test(date) ? new Date(date).toDateString() : new Date().toDateString()//toUTCString()
+    const _date = /\d{4}[-]\d{1,2}[-]\d{1,2}/.test(date) ? new Date(date).toDateString() : new Date().toDateString()
 
     //creo el Obj exercise para inicializar el Array
     const exercise = new Exercise({
@@ -31,25 +31,14 @@ router.post("/:_id/exercises", async (req, res) => {
     })
 
 
-    //busco si existe un log bajo ese id, de lo contrario se crea
+    //busco el log, 
     const logs = await Log.findById({ _id })
-    if (!logs) {
-      const log = new Log({
-        username,
-        _id,
-        log: [exercise]
-      })
-
-      await log.save();
-    } else {
-
-      logs.count++;
-      logs.log.push(exercise)
-      await logs.save();
-      // no tendria sentido , ya que para realizar eso habria que pasarle un callback para la logica sobre los datos y ya que es una promesa no tendria sentido
-      //await Log.update({ _id }, { count: 2, $push: { log: logs } })
-      // console.log(await Log.findOneAndUpdate({ _id }, { $push: { log: logs } }, { new: true }))
-    }
+    logs.count++;
+    logs.log.push(exercise)
+    await logs.save();
+    // no tendria sentido , ya que para realizar eso habria que pasarle un callback para la logica sobre los datos y ya que es una promesa no tendria sentido
+    //await Log.update({ _id }, { count: 2, $push: { log: logs } })
+    // console.log(await Log.findOneAndUpdate({ _id }, { $push: { log: logs } }, { new: true }))
 
     res.json({
       _id,

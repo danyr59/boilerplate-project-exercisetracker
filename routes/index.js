@@ -27,6 +27,8 @@ router.get("/api/users", async (req, res) => {
 })
 
 // @Route GET /api/users/:_id/logs
+// @Route GET /api/users/:_id/logs?[from=yyyy-mm-dd][&to=yyyy-mm-dd][&limit=integer]
+// @optionals [] optionals in the route
 // @desc  obtinene los datos del log del id en concreto
 // @return retorna un objeto con los datos del log sin restriccion de fecha 
 router.get("/api/users/:_id/logs", async (req, res) => {
@@ -34,31 +36,37 @@ router.get("/api/users/:_id/logs", async (req, res) => {
   const { _id } = req.params;
 
   try {
+    //Comporobar si existe 
     const log = await Log.findById(_id);
-    // log.log.forEach(x => console.log(x))
     if (!log) {
       console.log("log no existe")
       return res.json("log no existe bajo ese id");
     }
-    //Obtiene todos los datos de Log 
+
+    //Verifica si no posee req.params 
+    //en caso de ser isObjEmpy() -> true , devuelvo el log completo sin filtrado 
     if (isObjEmpy(query)) {
-
-
-      res.json(log)
-
+      return res.json(log);
     } else {
-      //Obtiene los datos filtrados por fechas(from,to), y numero de coincidencias 
-      // console.log(query.from, query.to)
+
       const from = new Date(query['from']).getTime();
       const to = new Date(query['to']).getTime();
-      if (!from && !to && !query['limit']) {
-        return res.json("From, to - format invalid")
-      } else if (!from && !to && query['limit']) {
-        log.log = JSON.parse(JSON.stringify(log.log)).slice(0, Number(query.limit))
+      const limit = query['limit'];
+
+      //case from=null and case to=null and limit=null
+      if (!from && !to && !limit) {
+        return res.json(`/api/users/:_id/logs?[from=yyyy-mm-dd][&to=yyyy-mm-dd][&limit=integer] ([] optionals) - check`)
+      }
+
+      //case limit sea el unico argumento de query [Obj] - devolvemos el numero limite de coincidencias como Log objeto  
+      if (!from && !to && limit) {
+        log.log = log.log.slice(0, Number(query.limit))
         return res.json(log)
       }
-      // console.log(from, to)
-      const logs = JSON.parse(JSON.stringify(log.log)).filter((exercise) => {
+
+      //JSON.parse(JSON.stringify(log.log)) Permite copiar con profundidad 
+      //filtrado de log Array - devolvemos Log con la modificacion del array 
+      const logs = log.log.filter((exercise) => {
         const date = new Date(exercise.date).getTime()
         return (
           (from && to)
@@ -73,8 +81,7 @@ router.get("/api/users/:_id/logs", async (req, res) => {
                 ? true
                 : false
         )
-      })//.slice(0, Number(query.limit))
-
+      })
       log.log = (query.limit) ? logs.slice(0, Number(query.limit)) : logs;
       res.json(log)
       console.log("datos del log", logs)
