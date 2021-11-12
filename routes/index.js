@@ -5,7 +5,7 @@ const { User } = require("../models/User.js")
 
 const { Log } = require("../models/Log");
 const { json } = require('express');
-
+//[from=2021-11-5][&to=2021-11-12][&limit=10]
 let isObjEmpy = (Obj) => {
   return Object.keys(Obj).length === 0;
 }
@@ -30,7 +30,7 @@ router.get("/api/users", async (req, res) => {
 // @Route GET /api/users/:_id/logs?[from=yyyy-mm-dd][&to=yyyy-mm-dd][&limit=integer]
 // @optionals [] optionals in the route
 // @desc  obtinene los datos del log del id en concreto
-// @return Log 
+// @return retorna un objeto con los datos del log sin restriccion de fecha 
 router.get("/api/users/:_id/logs", async (req, res) => {
   const query = JSON.parse(JSON.stringify(req.query).replace(/\[|\]/g, ""))
   const { _id } = req.params;
@@ -52,7 +52,7 @@ router.get("/api/users/:_id/logs", async (req, res) => {
       const from = new Date(query['from']).getTime();
       const to = new Date(query['to']).getTime();
       const limit = query['limit'];
-      const _log = JSON.parse(JSON.stringify(log));
+
       //case from=null and case to=null and limit=null
       if (!from && !to && !limit) {
         return res.json(`/api/users/:_id/logs?[from=yyyy-mm-dd][&to=yyyy-mm-dd][&limit=integer] ([] optionals) - check`)
@@ -60,7 +60,7 @@ router.get("/api/users/:_id/logs", async (req, res) => {
 
       //case limit sea el unico argumento de query [Obj] - devolvemos el numero limite de coincidencias como Log objeto  
       if (!from && !to && limit) {
-        _log.log = log.log.slice(0, Number(query.limit))
+        log.log = log.log.slice(0, Number(query.limit))
         return res.json(log)
       }
 
@@ -82,8 +82,9 @@ router.get("/api/users/:_id/logs", async (req, res) => {
                 : false
         )
       })
-      _log.log = (limit) ? logs.slice(0, Number(query.limit)) : logs;
-      res.json(_log)
+      log.log = (query.limit) ? logs.slice(0, Number(query.limit)) : logs;
+      res.json(log)
+      console.log("datos del log", logs)
 
     }
   } catch (error) {
