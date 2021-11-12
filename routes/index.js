@@ -52,7 +52,8 @@ router.get("/api/users/:_id/logs", async (req, res) => {
       const from = new Date(query['from']).getTime();
       const to = new Date(query['to']).getTime();
       const limit = query['limit'];
-      const _log = JSON.parse(JSON.stringify(log));
+      let _log = JSON.parse(JSON.stringify(log));
+
       //case from=null and case to=null and limit=null
       if (!from && !to && !limit) {
         return res.json(`/api/users/:_id/logs?[from=yyyy-mm-dd][&to=yyyy-mm-dd][&limit=integer] ([] optionals) - check`)
@@ -60,8 +61,8 @@ router.get("/api/users/:_id/logs", async (req, res) => {
 
       //case limit sea el unico argumento de query [Obj] - devolvemos el numero limite de coincidencias como Log objeto  
       if (!from && !to && limit) {
-        _log.log = log.log.slice(0, Number(query.limit))
-        return res.json(log)
+        _log.log = log.log.slice(0, Number(limit))
+        return res.json(_log)
       }
 
       //JSON.parse(JSON.stringify(log.log)) Permite copiar con profundidad 
@@ -82,7 +83,7 @@ router.get("/api/users/:_id/logs", async (req, res) => {
                 : false
         )
       })
-      _log.log = (limit) ? logs.slice(0, Number(query.limit)) : logs;
+      _log.log = (limit) ? logs.slice(0, Number(limit)) : logs;
       res.json(_log)
 
     }
