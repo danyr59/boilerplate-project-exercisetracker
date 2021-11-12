@@ -59,8 +59,6 @@ router.get("/api/users/:_id/logs", async (req, res) => {
       // console.log(from, to)
       const logs = JSON.parse(JSON.stringify(log.log)).filter((exercise) => {
         const date = new Date(exercise.date).getTime()
-        console.log((from && to) ? true : false)
-        console.log((from < date && date < to) ? true : false)
         return (
           (from && to)
             ? (from < date && date < to)
@@ -77,7 +75,7 @@ router.get("/api/users/:_id/logs", async (req, res) => {
       }).slice(0, Number(query.limit))
       log.log = logs;
       res.json(log)
-      console.log("exito, datos obtenidos", logs)
+      console.log("datos del log", logs)
 
     }
   } catch (error) {

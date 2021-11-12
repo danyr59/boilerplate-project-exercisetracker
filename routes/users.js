@@ -3,6 +3,8 @@ const router = express.Router();
 
 const { User } = require("../models/User")
 
+const { Log } = require("../models/Log")
+
 /**
   * @Route POST /api/users/
   * @desc Create a users
@@ -11,7 +13,15 @@ const { User } = require("../models/User")
 router.post("/users", async (req, res) => {
   const { username } = req.body
   const usuario = new User({ username })
+  // const log = new Log({
+  //   username,
+  //   count: 0,
+  //   id: usuario._id,
+  //   log: []
+  // })
   await usuario.save();
+
+  console.log(usuario._id)
   res.json(usuario)
 })
 

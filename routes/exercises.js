@@ -16,6 +16,7 @@ router.post("/:_id/exercises", async (req, res) => {
   try {
     //buscar si existe usuario de lo contrario me salgo
     const user = await User.findById(_id)
+    console.log(user)
     if (!user) {
       return res.json("no existe id")
     }
