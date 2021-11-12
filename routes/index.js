@@ -3,24 +3,12 @@ const router = express.Router();
 
 const { User } = require("../models/User.js")
 
-const { Log } = require("../models/Log")
+const { Log } = require("../models/Log");
+const { json } = require('express');
 //[from=2021-11-5][&to=2021-11-12][&limit=10]
 let isObjEmpy = (Obj) => {
-  // for (var prop in Obj) {
-  //   if (Obj.hasOwnProperty(props)) return false;
-  // }
-  //return true;
   return Object.keys(Obj).length === 0;
 }
-
-// let formatDate = (Obj) => {
-//   for (var props in Obj) {
-//     let string = Obj[props]
-
-//     Obj[props] = string.replace(/\[|\]/g, "")
-//     console.log(Obj[props])
-//   }
-// }
 
 // @Route GET /api/users
 // @desc  Obtener todos los datos 
@@ -43,24 +31,55 @@ router.get("/api/users", async (req, res) => {
 // @desc  obtinene los datos del log del id en concreto
 // @return retorna un objeto con los datos del log sin restriccion de fecha 
 router.get("/api/users/:_id/logs", async (req, res) => {
-  //
   const query = JSON.parse(JSON.stringify(req.query).replace(/\[|\]/g, ""))
-  if (isObjEmpy(query)) {
-
-  }
-  // console.log(query, req.query)
-
   const { _id } = req.params;
 
   try {
     const log = await Log.findById(_id);
+    // log.log.forEach(x => console.log(x))
     if (!log) {
       console.log("log no existe")
       return res.json("log no existe bajo ese id");
     }
+    //Obtiene todos los datos de Log 
+    if (isObjEmpy(query)) {
 
-    res.json(log)
-    console.log("exito, datos obtenidos", log)
+
+      res.json(log)
+      console.log("exito, datos obtenidos", log)
+
+    } else {
+      //Obtiene los datos filtrados por fechas(from,to), y numero de coincidencias 
+      // console.log(query.from, query.to)
+      const from = new Date(query['from']).getTime();
+      const to = new Date(query['to']).getTime();
+      if (!from && !to) {
+        return res.json("From, to - format invalid")
+      }
+      // console.log(from, to)
+      const logs = JSON.parse(JSON.stringify(log.log)).filter((exercise) => {
+        const date = new Date(exercise.date).getTime()
+        console.log((from && to) ? true : false)
+        console.log((from < date && date < to) ? true : false)
+        return (
+          (from && to)
+            ? (from < date && date < to)
+              ? true
+              : false
+            : (!to && from)
+              ? (from < date)
+                ? true
+                : false
+              : (date < to)
+                ? true
+                : false
+        )
+      }).slice(0, Number(query.limit))
+      log.log = logs;
+      res.json(log)
+      console.log("exito, datos obtenidos", logs)
+
+    }
   } catch (error) {
 
     console.log(error.message)
