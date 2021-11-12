@@ -54,9 +54,9 @@ router.post("/:_id/exercises", async (req, res) => {
     res.json({
       _id,
       username,
-      _date,
-      duration: new Number(duration),
-      description
+      date: _date,
+      duration: Number(duration),
+      description,
     })
 
   } catch (error) {

@@ -19,7 +19,6 @@ router.get("/api/users", async (req, res) => {
       res.json("no existen usuarios")
     }
 
-    console.log("Exito, todos los datos obtenidos ", usuarios)
     res.json(usuarios)
   } catch (error) {
     console.log(error.message)
@@ -46,7 +45,6 @@ router.get("/api/users/:_id/logs", async (req, res) => {
 
 
       res.json(log)
-      console.log("exito, datos obtenidos", log)
 
     } else {
       //Obtiene los datos filtrados por fechas(from,to), y numero de coincidencias 

@@ -13,14 +13,14 @@ const { Log } = require("../models/Log")
 router.post("/users", async (req, res) => {
   const { username } = req.body
   const usuario = new User({ username })
-  // const log = new Log({
-  //   username,
-  //   count: 0,
-  //   id: usuario._id,
-  //   log: []
-  // })
+  const log = new Log({
+    username,
+    count: 0,
+    _id: usuario._id,
+    log: []
+  })
   await usuario.save();
-
+  await log.save(); 
   console.log(usuario._id)
   res.json(usuario)
 })
