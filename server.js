@@ -13,6 +13,9 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static('public'))
 
 
+//config
+app.set("port", process.env.PORT || 3000)
+
 //routes
 app.use("/", require("./routes/index"))
 app.use("/api", require("./routes/users"));
@@ -22,6 +25,6 @@ app.get('/', (req, res) => {
 });
 
 
-const listener = app.listen(process.env.PORT || 3000, () => {
-  console.log('Your app is listening on port ' + listener.address().port)
+app.listen(app.get("port"), () => {
+  console.log(`Your app is listening on port  ${app.get("port")}`)
 })
